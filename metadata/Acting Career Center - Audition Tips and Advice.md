@@ -1,0 +1,20 @@
+# Audition Tips and Advice
+## Uploader: Acting Career Center
+## Playlist URL: https://www.youtube.com/playlist?list=PLv_Q2IKXADB8wcGwfJ3kzGGWODFfR4Xd-
+## Download command: `youtube-dl -j --flat-playlist "https://www.youtube.com/playlist?list=PLv_Q2IKXADB8wcGwfJ3kzGGWODFfR4Xd-"`
+
+{"_type": "url", "ie_key": "Youtube", "id": "xTFyil0g07s", "url": "xTFyil0g07s", "title": "Do You Know All of These Audition Terms? | Acting Tips for New Actors", "description": null, "duration": 786.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "NrYXbl5toDU", "url": "NrYXbl5toDU", "title": "7 Easy Ways to Memorize Lines for Your Acting Audition | How to Read a Script and Memorize it FAST", "description": null, "duration": 764.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "1FYADI0rSCc", "url": "1FYADI0rSCc", "title": "What to Wear to an Audition for Film and TV | Should You Dress Like the Character?", "description": null, "duration": 484.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "JCX3VbDCWwY", "url": "JCX3VbDCWwY", "title": "What I Learned Acting in The Vampire Diaries | How to Act in Film and Television", "description": null, "duration": 569.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "ghFZgmFA3a0", "url": "ghFZgmFA3a0", "title": "How to Self Tape Auditions Like a PRO | Self Tape Audition Example with Gray Background", "description": null, "duration": 622.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "J8GISUt3dwM", "url": "J8GISUt3dwM", "title": "How to Act in an Audition With Props", "description": null, "duration": 208.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "dt1D_fdFhhY", "url": "dt1D_fdFhhY", "title": "Audition Tip: How to answer the DREADED \"Tell me about yourself\"", "description": null, "duration": 366.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "vOvJ3D0rRMw", "url": "vOvJ3D0rRMw", "title": "Example: How To Answer \"Tell Me About Yourself\" at an Audition", "description": null, "duration": 331.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "MbB_Jue1CpM", "url": "MbB_Jue1CpM", "title": "Audition Tip: Avoid this Acting Mistake with Your Script", "description": null, "duration": 338.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "V078q2ShTcc", "url": "V078q2ShTcc", "title": "Acting Advice: What NOT to Do At an Audition", "description": null, "duration": 335.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "9HxkNv4p1-s", "url": "9HxkNv4p1-s", "title": "What Are the Chances You Will BOOK Your Audition? (my booking percentage revealed!)", "description": null, "duration": 594.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "sQbm-jNNPes", "url": "sQbm-jNNPes", "title": "How I BOOKED My First Hollywood Movie | How to Audition for a Movie", "description": null, "duration": 604.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "0iApML4l0lI", "url": "0iApML4l0lI", "title": "How The Casting Process Works | How to Get Cast in a Movie or Show", "description": null, "duration": 720.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "8Qz4U7Zu6rg", "url": "8Qz4U7Zu6rg", "title": "How I Auditioned for a Commercial with SHAQ and Booked It!", "description": null, "duration": 894.0, "view_count": null, "uploader": "Acting Career Center"}
+{"_type": "url", "ie_key": "Youtube", "id": "ukNrZuVb4Ew", "url": "ukNrZuVb4Ew", "title": "Do THIS Before Every Live Audition | Yes, Zoom Auditions Too", "description": null, "duration": 628.0, "view_count": null, "uploader": "Acting Career Center"}
