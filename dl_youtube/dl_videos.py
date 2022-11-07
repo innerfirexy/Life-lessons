@@ -50,7 +50,7 @@ def read_metadata(metadata_path):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--video_folder", default='youtube-video', help='Path to youtube videos')
-    parser.add_argument("--metadata", default='./YouTube_channels_metadata', help='Path to metadata')
+    parser.add_argument("--metadata", default='../metadata', help='Path to metadata')
     parser.add_argument("--workers", default=1, type=int, help='Number of workers')
     parser.add_argument("--youtube", default='./youtube-dl', help='Path to youtube-dl')
  

@@ -5,6 +5,7 @@ import argparse
 import os
 import pickle
 from tqdm import tqdm
+from typing import List, Tuple
 
 
 # Init
@@ -61,7 +62,7 @@ def check_args(args):
         return False
 
 
-def body_pose(input_file: str, annotated_output: str = None):
+def body_pose(input_file: str, annotated_output: str = None) -> List[Tuple]:
     cap = cv2.VideoCapture(input_file)
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
