@@ -27,7 +27,9 @@ There will be a video file named `foo_annotated.mp4` saved to the folder, which 
 
 ![foo.mp4](images/test_annotated_large.gif)
 
-The main output file is in `.pkl` format, which is a serialized object of type `List[Tuple]`. Each `Tuple` object has two items: `(frame_index: int, poses: np.ndarray)`. 
+The main output file is in `.pkl` format, which is a serialized object of type `List[Tuple]`. Each `Tuple` object has two items: `(frame_index: int, poses: np.ndarray)`. Here `frame_index` is the index of video frame (from 0 to the maximum length -1) that contains a valid detected human body, so for frames where no human body is detected, their indices are skipped. `poses` is a numpy array of shape `(33, 3)`, in which `33` is the number of key points, and `3` stands for the `x`, `y`, and `z` coordinates. 
+
+For detailed explanations on the format of the key points coordinates in the output, please refer to the APIs of [mediapipe](https://google.github.io/mediapipe/solutions/pose.html).
 
 
 ## Label gestures (tokenize)
