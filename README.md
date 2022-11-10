@@ -11,7 +11,7 @@ cd dl_youtube
 python dl_videos.py --video_folder PATH_TO_OUTPUT
 ```
 
-## Body key points extraction
+## Step 1. Body key points extraction
 Run the script `extract_body_kp.py` in folder `processing` to process multiple videos in batch:
 ```
 python extract_body_kp.py --input_dir YOUR_INPUT_PATH --output_dir YOUR_OUTPUT_PATH
@@ -32,6 +32,7 @@ The main output file is in `.pkl` format, which is a serialized object of type `
 For detailed explanations on the format of the key points coordinates in the output, please refer to the APIs of [mediapipe](https://google.github.io/mediapipe/solutions/pose.html).
 
 
-## Label gestures (tokenize)
+## Step 2. Tokenize hand gestures (continuous position => discrete label)
+Based on the key points coordinates returned from step 1, we can tokenize the hand gesture in each frame using the spatial distribution information. 
 
-## Sample gestures (word => gesture mapping)
+## Step 3. Sample gestures (word sequence => gesture sequence)
