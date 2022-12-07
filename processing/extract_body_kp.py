@@ -3,9 +3,9 @@ import mediapipe as mp
 import numpy as np
 import argparse
 import os
+import glob
 import pickle
 from tqdm import tqdm
-from typing import List, Tuple
 
 
 # Init
@@ -62,7 +62,7 @@ def check_args(args):
         return False
 
 
-def body_pose(input_file: str, annotated_output: str = None) -> List[Tuple]:
+def body_pose(input_file: str, annotated_output: str = None):
     cap = cv2.VideoCapture(input_file)
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -135,9 +135,17 @@ def main(args):
         res = body_pose(input_file=args.input, annotated_output=annotated_file)
         with open(args.output, 'wb') as f:
             pickle.dump(res, f)
+    if args.input_dir:
+        input_files = glob.glob(os.path.join(args.input_dir, '*.mp4'))
+        for in_file in tqdm(input_files):
+            in_file_name, _ = os.path.splitext(os.path.basename(in_file))
+            out_file = os.path.join(args.output_dir, in_file_name + '.pkl')
+            res = body_pose(input_file=in_file)
+            with open(args.output, 'wb') as f:
+                pickle.dump(res, f)
 
 
 if __name__ == '__main__':
-    args, unknown = parser.parse_known_args()
+    args = parser.parse_args()
     assert(check_args(args))
     main(args)
