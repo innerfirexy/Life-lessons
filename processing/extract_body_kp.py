@@ -145,7 +145,7 @@ def main(args):
                 in_file_name, _ = os.path.splitext(os.path.basename(in_file))
                 out_file = os.path.join(args.output_dir, in_file_name + '.pkl')
                 res = body_pose(input_file=in_file)
-                with open(args.output, 'wb') as f:
+                with open(out_file, 'wb') as f:
                     pickle.dump(res, f)
 
 

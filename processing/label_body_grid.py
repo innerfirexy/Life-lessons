@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import argparse
 import os
+import glob
 import pickle
 from tqdm import tqdm
 
@@ -14,11 +15,19 @@ parser.add_argument('--input_dir', type=str, help='Input directory that contains
 parser.add_argument('--output_dir', type=str, help='Output directory to save labeled data')
 parser.add_argument('--input', type=str, help='A single input file (.pkl)')
 parser.add_argument('--output', type=str, help='An output file name')
-parser.add_argument('--return_type', type=str, choices=['list', 'df'])
-parser.add_argument('--return_grids', action=argparse.BooleanOptionalAction)
+parser.add_argument('--output_ext', type=str, default='.pkl', choices=['.pkl', '.csv'])
+parser.add_argument('--N', type=int, default=3, help='The N value for creating NxN grids')
+parser.add_argument('--return_type', type=str, default='list', choices=['list', 'df'])
+parser.add_argument('--return_grids', action='store_true')
 
 
 def check_args(args):
+    # Check output extension
+    if args.output_ext == '.csv':
+        if args.return_type == 'list' or args.return_grids == True:
+            print('--output_ext can only be .csv when --return_type is \'df\' and --return_grids is False')
+            return False
+    # Check input and output paths
     if args.input_dir:
         # Check input_dir
         if not os.path.exists(args.input_dir):
@@ -150,17 +159,39 @@ def get_labels(data_list, N = 3, hw_ratio = 720/1280, return_type = 'list', retu
 
 
 def main(args):
+    # Single processing
     if args.input:
-        with open(args.input, 'rb') as fr, open(args.output, 'wb') as fw:
+        with open(args.input, 'rb') as fr:
             kp_data = pickle.load(fr)
-        if args.return_grids:
-            labels, grids = get_labels(kp_data, N = args.N, return_type=args.return_type, return_grids=True)
-            fw.write((labels, grids))
+        res = get_labels(kp_data, N=args.N, return_type=args.return_type, return_grids=args.return_grids)
+        print(res)
+        if args.output_ext == '.pkl':
+            with open(args.output, 'wb') as f:
+                pickle.dump(res, f)
+        elif args.output_ext == '.csv':
+            assert isinstance(res, pd.DataFrame)
+            res.to_csv(args.output, index=False)
+    # Batch processing
+    if args.input_dir:
+        input_files = glob.glob(os.path.join(args.input_dir, '*.pkl'))
+        if args.multiprocessing:
+            pass
         else:
-            labels = get_labels(kp_data, N = args.N, return_type=args.return_type, return_grids=False)
-            fw.write(labels)
+            for in_file in tqdm(input_files):
+                with open(in_file, 'rb') as f:
+                    kp_data = pickle.load(f)
+                in_file_name, _ = os.path.splitext(os.path.basename(in_file))
+                out_file = os.path.join(args.output_dir, in_file_name + args.output_ext)
+                res = get_labels(kp_data, N=args.N, return_type=args.return_type, return_grids=args.return_grids)
+                if args.output_ext == '.pkl':
+                    with open(out_file, 'wb') as f:
+                        pickle.dump(res, f)
+                elif args.output_ext == 'csv':
+                    assert isinstance(res, pd.DataFrame)
+                    res.to_csv(out_file, index=False)
 
 
 if __name__ == '__main__':
-    args, unknown = parser.parse_known_args()
+    args = parser.parse_args()
     assert(check_args(args))
+    main(args)
