@@ -22,6 +22,7 @@ parser.add_argument('--output_dir', type=str, help='Output directory to save lab
 parser.add_argument('--input', type=str, help='A single input file (.mp4)')
 parser.add_argument('--output', type=str, help='An output file name (.pkl)')
 parser.add_argument('--annotate', action='store_true')
+parser.add_argument('--multiporcessing', '-mp', action='store_true')
 
 def check_args(args):
     if args.input_dir:
@@ -137,12 +138,15 @@ def main(args):
             pickle.dump(res, f)
     if args.input_dir:
         input_files = glob.glob(os.path.join(args.input_dir, '*.mp4'))
-        for in_file in tqdm(input_files):
-            in_file_name, _ = os.path.splitext(os.path.basename(in_file))
-            out_file = os.path.join(args.output_dir, in_file_name + '.pkl')
-            res = body_pose(input_file=in_file)
-            with open(args.output, 'wb') as f:
-                pickle.dump(res, f)
+        if args.multiprocessing:
+            pass
+        else:
+            for in_file in tqdm(input_files):
+                in_file_name, _ = os.path.splitext(os.path.basename(in_file))
+                out_file = os.path.join(args.output_dir, in_file_name + '.pkl')
+                res = body_pose(input_file=in_file)
+                with open(args.output, 'wb') as f:
+                    pickle.dump(res, f)
 
 
 if __name__ == '__main__':
