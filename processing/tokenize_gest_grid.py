@@ -12,7 +12,7 @@ from tqdm import tqdm
 ###
 parser = argparse.ArgumentParser()
 parser.add_argument('--input_dir', type=str, help='Input directory that contains extracted keypoints files (e.g., .pkl)')
-parser.add_argument('--output_dir', type=str, help='Output directory to save labeled data')
+parser.add_argument('--output_dir', type=str, help='Output directory to save tokenized data')
 parser.add_argument('--input', type=str, help='A single input file (.pkl)')
 parser.add_argument('--output', type=str, help='An output file name')
 parser.add_argument('--output_ext', type=str, default='.pkl', choices=['.pkl', '.csv'])
