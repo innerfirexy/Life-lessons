@@ -7,8 +7,19 @@ import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
 import itertools
+import argparse
 from collections import Counter
 from typing import Tuple, Union, List
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--input_gesture_dir', type=str, help='Input directory that contains gesture token files, which can be either .pkl or .csv')
+parser.add_argument('--input_vtt_dir', type=str, help='Input directory that contains the automatically generated subtitle files in .vtt format')
+parser.add_argument('--output_word_dir', type=str, help='Output directory to save the extracted word data file')
+parser.add_argument('--output_gesture_dir', type=str, help='Output directory to save the extracted gesture data file')
+parser.add_argument('--output_mixed_dir', type=str, help='Output directory to save the extracted mixed data file')
+parser.add_argument('--input', type=str, help='A single input file (.pkl)')
+parser.add_argument('--output', type=str, help='An output file name')
 
 
 # Interpolate missing frames with None
@@ -122,7 +133,7 @@ def extract_words_gestures_from_vtt(vtt_file: str, interpolated_tokens: List[int
     return all_gestures, all_words 
 
 
-def process_single_file(gesture_file, vtt_file, output_words_dir=None, output_gestures_dir=None, output_mixed_dir=None):
+def process_single_file(gesture_file, vtt_file, output_word_dir=None, output_gesture_dir=None, output_mixed_dir=None):
     # double check if the video ids are matched
     file_id1, _ = os.path.splitext(os.path.basename(gesture_file))
     file_id2 = re.split(r'.en', os.path.basename(vtt_file))[0]
@@ -130,15 +141,15 @@ def process_single_file(gesture_file, vtt_file, output_words_dir=None, output_ge
 
     intp_tokens = interpolate_gesture_tokens(gesture_file)
     gestures, words = extract_words_gestures_from_vtt(vtt_file, intp_tokens)
-    if output_words_dir:
-        os.makedirs(output_words_dir, exist_ok=True)
-        output_words_file = os.path.join(output_words_dir, file_id1 + '.txt')
+    if output_word_dir:
+        os.makedirs(output_word_dir, exist_ok=True)
+        output_words_file = os.path.join(output_word_dir, file_id1 + '.txt')
         with open(output_words_file, 'w') as f:
             for item in words:
                 f.write(' '.join(item) + '\n')
-    if output_gestures_dir:
-        os.makedirs(output_gestures_dir, exist_ok=True)
-        output_gestures_file = os.path.join(output_gestures_dir, file_id1 + '.txt')
+    if output_gesture_dir:
+        os.makedirs(output_gesture_dir, exist_ok=True)
+        output_gestures_file = os.path.join(output_gesture_dir, file_id1 + '.txt')
         with open(output_gestures_file, 'w') as f:
             for item in gestures:
                 f.write(' '.join(map(str, item)) + '\n')
@@ -160,7 +171,7 @@ def test():
     print(len(words))
     print(gestures[-1])
     print(words[-1])
-    process_single_file(gest_file, vtt_file, output_words_dir='../data/words_by_id', output_gestures_dir='../data/gestures_by_id',
+    process_single_file(gest_file, vtt_file, output_word_dir='../data/words_by_id', output_gesture_dir='../data/gestures_by_id',
         output_mixed_dir='../data/mixed_by_id')
 
 
