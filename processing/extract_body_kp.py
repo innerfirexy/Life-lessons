@@ -6,9 +6,10 @@ import os
 import glob
 import pickle
 from tqdm import tqdm
+from multiprocessing import Pool, freeze_support, RLock
 
 
-# Init
+# Initialize mediapipe
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
@@ -22,7 +23,9 @@ parser.add_argument('--output_dir', type=str, help='Output directory to save lab
 parser.add_argument('--input', type=str, help='A single input file (.mp4)')
 parser.add_argument('--output', type=str, help='An output file name (.pkl)')
 parser.add_argument('--annotate', action='store_true')
-parser.add_argument('--multiporcessing', '-mp', action='store_true')
+parser.add_argument('--multiprocessing', '-mp', action='store_true')
+parser.add_argument('--num_workers', type=int, default=2)
+
 
 def check_args(args):
     if args.input_dir:
@@ -63,7 +66,21 @@ def check_args(args):
         return False
 
 
-def body_pose(input_file: str, annotated_output: str = None):
+##
+# For multiprocessing
+# Adopted from https://leimao.github.io/blog/Python-tqdm-Multiprocessing/
+def worker(pid: int, input_file: str, args):
+    in_file_name, _ = os.path.splitext(os.path.basename(input_file))
+    out_file = os.path.join(args.output_dir, in_file_name + '.pkl')
+    res = body_pose(input_file=input_file, verbose=True, pid=pid)
+    with open(out_file, 'wb') as f:
+        pickle.dump(res, f)
+    return True
+
+
+##
+# Run Mediapipe on single input video file
+def body_pose(input_file: str, annotated_output: str = None, verbose = False, pid: int = 1):
     cap = cv2.VideoCapture(input_file)
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -76,7 +93,9 @@ def body_pose(input_file: str, annotated_output: str = None):
                                  cv2.VideoWriter_fourcc(*'mp4v'),
                                  fps, size)
     result_list = []
-    pbar = tqdm(total=n_frames)
+    pbar = None
+    if verbose:
+        pbar = tqdm(total=n_frames, desc='# {}'.format(pid).zfill(2), position=pid)
     with mp_pose.Pose(
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5) as pose:
@@ -115,9 +134,12 @@ def body_pose(input_file: str, annotated_output: str = None):
                     break
             # Progress bar
             frame_idx += 1
-            pbar.update(1)
+            if pbar:
+                pbar.update(1)
 
     cap.release()
+    if pbar:
+        pbar.close()
     if annotated_output:
         output.release()
     cv2.destroyAllWindows()
@@ -133,18 +155,27 @@ def main(args):
             annotated_file = input_filename + '_annotated.mp4'
         else:
             annotated_file = None
-        res = body_pose(input_file=args.input, annotated_output=annotated_file)
+        res = body_pose(input_file=args.input, annotated_output=annotated_file, verbose=True)
         with open(args.output, 'wb') as f:
             pickle.dump(res, f)
     if args.input_dir:
         input_files = glob.glob(os.path.join(args.input_dir, '*.mp4'))
         if args.multiprocessing:
-            pass
+            # Multiprocessing method adopted from https://leimao.github.io/blog/Python-tqdm-Multiprocessing/
+            freeze_support() # For Windows support
+            pool = Pool(processes=args.num_workers, initargs=(RLock(),), initializer=tqdm.set_lock)
+            jobs = [pool.apply_async(worker, args=(i+1,fname,args)) for i, fname in enumerate(input_files)]
+            count = 0
+            for job in jobs:
+                if job.get():
+                    count += 1
+            pool.close()
+            print(f'\n{count} jobs done.')
         else:
             for in_file in tqdm(input_files):
                 in_file_name, _ = os.path.splitext(os.path.basename(in_file))
                 out_file = os.path.join(args.output_dir, in_file_name + '.pkl')
-                res = body_pose(input_file=in_file)
+                res = body_pose(input_file=in_file, verbose=True)
                 with open(out_file, 'wb') as f:
                     pickle.dump(res, f)
 

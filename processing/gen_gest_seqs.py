@@ -18,8 +18,8 @@ parser.add_argument('--input_vtt_dir', type=str, help='Input directory that cont
 parser.add_argument('--output_word_dir', type=str, help='Output directory to save the extracted word data file')
 parser.add_argument('--output_gesture_dir', type=str, help='Output directory to save the extracted gesture data file')
 parser.add_argument('--output_mixed_dir', type=str, help='Output directory to save the extracted mixed data file')
-parser.add_argument('--input', type=str, help='A single input file (.pkl)')
-parser.add_argument('--output', type=str, help='An output file name')
+parser.add_argument('--input_gesture_file', type=str, help='An input file that contains gesture token files, .pkl or .csv')
+parser.add_argument('--input_vtt_file', type=str, help='An input file that contains the automatically generated subtitle files in .vtt format')
 
 
 # Interpolate missing frames with None
@@ -175,5 +175,42 @@ def test():
         output_mixed_dir='../data/mixed_by_id')
 
 
+def main(args):
+    # Single processing
+    if args.input_gesture_file:
+        assert args.input_vtt_file is not None
+        process_single_file(args.input_gesture_file, args.input_vtt_file, args.output_word_dir, args.output_gesture_dir, args.output_mixed_dir)
+    # Batch processing
+    if args.input_gesture_dir:
+        assert args.input_vtt_dir is not None
+        input_gesture_files = glob.glob(os.path.join(args.input_gesture_dir, '*.csv'))
+        input_gesture_files = sorted(input_gesture_files)
+        input_vtt_files = glob.glob(os.path.join(args.input_vtt_dir, '*.vtt'))
+        input_vtt_files = sorted(input_vtt_files)
+        print(f'# of input gesture files: {len(input_gesture_files)}')
+        print(f'# of input vtt files: {len(input_vtt_files)}')
+
+        gesture_file_ids = []
+        for g_file in input_gesture_files:
+            file_id, _ = os.path.splitext(os.path.basename(g_file))
+            gesture_file_ids.append(file_id)
+        vtt_file_ids = []
+        for v_file in input_vtt_files:
+            file_id = re.split(r'.en', os.path.basename(v_file))[0]
+            vtt_file_ids.append(file_id)
+        common_ids = set(gesture_file_ids).intersection(set(vtt_file_ids))
+        strange_g_ids = list(set(gesture_file_ids) - common_ids)
+        strange_v_ids = list(set(vtt_file_ids) - common_ids)
+        print(f'Strange gesture ids: {strange_g_ids}')
+        print(f'Strange vtt ids: {strange_v_ids}')
+        print(f'# of matched file pairs: {len(common_ids)}')
+
+        for file_id in tqdm(common_ids):
+            g_file = os.path.join(args.input_gesture_dir, file_id + '.csv')
+            v_file = os.path.join(args.input_vtt_dir, file_id + '.en.vtt')
+            process_single_file(g_file, v_file, output_word_dir=args.output_word_dir, output_gesture_dir=args.output_gesture_dir, output_mixed_dir=args.output_mixed_dir)
+
+
 if __name__ == '__main__':
-    test()
+    args = parser.parse_args()
+    main(args)

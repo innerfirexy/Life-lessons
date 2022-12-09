@@ -19,6 +19,7 @@ parser.add_argument('--output_ext', type=str, default='.pkl', choices=['.pkl', '
 parser.add_argument('--N', type=int, default=3, help='The N value for creating NxN grids')
 parser.add_argument('--return_type', type=str, default='list', choices=['list', 'df'])
 parser.add_argument('--return_grids', action='store_true')
+parser.add_argument('--multiprocessing', '-mp', action='store_true')
 
 
 def check_args(args):
@@ -186,7 +187,7 @@ def main(args):
                 if args.output_ext == '.pkl':
                     with open(out_file, 'wb') as f:
                         pickle.dump(res, f)
-                elif args.output_ext == 'csv':
+                elif args.output_ext == '.csv':
                     assert isinstance(res, pd.DataFrame)
                     res.to_csv(out_file, index=False)
 
