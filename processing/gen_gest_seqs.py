@@ -214,3 +214,12 @@ def main(args):
 if __name__ == '__main__':
     args = parser.parse_args()
     main(args)
+
+
+####
+# 2022.12.13 log
+# of input gesture files: 71
+# of input vtt files: 66
+# Strange gesture ids: ['XZ5MlLQCQrs', 'Rx14L3TXSWA', 'ukNrZuVb4Ew', 'aL3RERxiYwo', 'iJIa9YOLxIs', 'Ygmqh6nyaRU', '9gnhFpRTPR8', 'DcSDlJuqCT4', 'T7sBbdYt7hw']
+# Strange vtt ids: ['WQWiLZ1M6xw', 'iNtLNde_v1E', 'hXkiAfjFtgU', 'YXvXxZtseo0']
+# of matched file pairs: 62
