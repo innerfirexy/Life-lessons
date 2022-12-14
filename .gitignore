@@ -2,3 +2,4 @@
 *.pkl
 .DS_Store
 data/
+.idea/
