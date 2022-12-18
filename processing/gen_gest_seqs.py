@@ -49,8 +49,15 @@ def interpolate_gesture_tokens(gesture_file, unk=0) -> List[int]:
     except AssertionError:
         print(f'problem in {gesture_file}')
         raise
-    return interpolated_tokens 
+    return interpolated_tokens
 
+
+def str_to_float(time_str: str):
+    ms = datetime.strptime(time_str, "%H:%M:%S.%f").microsecond
+    s = datetime.strptime(time_str, "%H:%M:%S.%f").second
+    m = datetime.strptime(time_str, "%H:%M:%S.%f").minute
+    h = datetime.strptime(time_str, "%H:%M:%S.%f").hour
+    return ms/1e6 + s + m*60 + h*3600
 
 def get_token_by_timespan(start_time: Union[float, str], end_time: Union[float, str], interpolated_tokens, unk = 0, fps: int = 24):
     """
@@ -58,12 +65,6 @@ def get_token_by_timespan(start_time: Union[float, str], end_time: Union[float, 
     end_time: float, ending time of a token
     labels_map: list[int], a list of interpolated labels
     """
-    def str_to_float(time_str: str):
-        ms = datetime.strptime(time_str, "%H:%M:%S.%f").microsecond
-        s = datetime.strptime(time_str, "%H:%M:%S.%f").second
-        m = datetime.strptime(time_str, "%H:%M:%S.%f").minute
-        h = datetime.strptime(time_str, "%H:%M:%S.%f").hour
-        return ms/1e6 + s + m*60 + h*3600
     if isinstance(start_time, str):
         start_time = str_to_float(start_time)
     if isinstance(end_time, str):
@@ -93,44 +94,100 @@ def get_token_by_timespan(start_time: Union[float, str], end_time: Union[float, 
 
 def extract_words_gestures_from_vtt(vtt_file: str, interpolated_tokens: List[int]) -> List[Tuple[Union[str, int]]]:
     """
-    vtt_file: An .vtt file that contains the automatic generated subscript from a youtube video
-    interpolated_tokens: the interpolated gesture tokens from the same video, which is obtaiend from interpolate_gesture_tokens()
+    vtt_file: An .vtt file that contains the automatic generated subscript from a YouTube video
+    interpolated_tokens: the interpolated gesture tokens from the same video, which is obtained from interpolate_gesture_tokens()
     """
     vtt = webvtt.read(vtt_file)
     all_gestures = []
     all_words = []
+    # Decide if the format of the .vtt file is basic or advanced
+    advanced_mode = True
+    full_text = ''
     for i in range(len(vtt.captions)):
-        for s in vtt.captions[i].lines:
-            ss = re.findall('<(.+?)>', s)
-            if len(ss) == 0:
+        full_text += ' '.join(vtt.captions[i].lines)
+    match = re.findall('<(.+?)>', full_text)
+    if len(match) == 0:
+        advanced_mode = False
+
+    if not advanced_mode: # The .vtt file is in a basic format, where we only have time stamps for the utterance
+        for i in range(len(vtt.captions)):
+            if len(vtt.captions[i].lines) > 1:
+                line = ' '.join(vtt.captions[i].lines) # There could be one utterance in multiple lines
+            else:
+                line = vtt.captions[i].text
+            line = line.strip()
+            if len(line) == 0:
                 continue
-            ss.insert(0, vtt.captions[i].start)
-            ss.insert(len(ss), vtt.captions[i].end)
-
-            # Use re.split
-            words = re.split(r'<\d\d:\d\d:\d\d\.\d+><c>', s) #<\d\d:\d\d:\d\d\.\d+><c>|</c><\d\d:\d\d:\d\d\.\d+>
-            words_cleaned = []
-            for w in words:
-                if w.endswith('</c>'):
-                    words_cleaned.append(w[:-4].strip())
-                else:
-                    words_cleaned.append(w.strip())
-
-            time_intervals = [x for x in ss if 'c' not in x]
-            assert len(time_intervals) == len(words_cleaned) + 1
-            gestures = []
-            for i, w in enumerate(words_cleaned):
-                start = time_intervals[i]
-                end = time_intervals[i+1]
-                try:
+            try:
+                utter_start = str_to_float(vtt.captions[i].start)
+                utter_end = str_to_float(vtt.captions[i].end)
+                words, time_spans = get_average_timespans(line, utter_start, utter_end)
+                gestures = []
+                for j, w in enumerate(words):
+                    start, end = time_spans[j]
                     token = get_token_by_timespan(start, end, interpolated_tokens)
-                except Exception:
-                    print(start, end, f'@{vtt_file}')
-                    raise
-                gestures.append(token)
+                    gestures.append(token)
+            except Exception:
+                print(f'vtt_file: {vtt_file}, line: {i}, start: {vtt.captions[i].start}, end: {vtt.captions[i].end}')
+                print(f'line: {vtt.captions[i].text}')
+                raise
             all_gestures.append(tuple(gestures))
-            all_words.append(tuple(words_cleaned))
-    return all_gestures, all_words 
+            all_words.append(tuple(words))
+    else: # The .vtt file is in advanced format where each token has its own detected time stamps
+        for i in range(len(vtt.captions)):
+            for s in vtt.captions[i].lines:
+                ss = re.findall('<(.+?)>', s)
+                if len(ss) == 0:
+                    continue
+                ss.insert(0, vtt.captions[i].start)
+                ss.insert(len(ss), vtt.captions[i].end)
+
+                # Use re.split
+                words = re.split(r'<\d\d:\d\d:\d\d\.\d+><c>', s) #<\d\d:\d\d:\d\d\.\d+><c>|</c><\d\d:\d\d:\d\d\.\d+>
+                words_cleaned = []
+                for w in words:
+                    if w.endswith('</c>'):
+                        words_cleaned.append(w[:-4].strip())
+                    else:
+                        words_cleaned.append(w.strip())
+
+                time_intervals = [x for x in ss if 'c' not in x]
+                assert len(time_intervals) == len(words_cleaned) + 1
+                gestures = []
+                for j, w in enumerate(words_cleaned):
+                    start = time_intervals[j]
+                    end = time_intervals[j+1]
+                    try:
+                        token = get_token_by_timespan(start, end, interpolated_tokens)
+                    except Exception:
+                        print(start, end, f'@{vtt_file}')
+                        raise
+                    gestures.append(token)
+                all_gestures.append(tuple(gestures))
+                all_words.append(tuple(words_cleaned))
+    return all_gestures, all_words
+
+def get_average_timespans(line: str, start: float, end: float):
+    words = line.strip().split(' ')
+    words = [w for w in words if w]
+    # clean each word token that contain punctuations
+    def _clean_word(word: str) -> str:
+        if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('!'):
+            return word[:-1]
+        else:
+            return word
+    words = list(map(_clean_word, words))
+
+    if len(words) == 0:
+        return None, None
+    elif len(words) == 1:
+        return words, [(start, end)]
+    else:
+        avg_span = (end - start) / len(words)
+        time_spans = []
+        for i in range(len(words)):
+            time_spans.append((i*avg_span + start, (i+1)*avg_span + start))
+        return words, time_spans
 
 
 def process_single_file(gesture_file, vtt_file, output_word_dir=None, output_gesture_dir=None, output_mixed_dir=None):
