@@ -1,5 +1,21 @@
+import pickle
 from typing import List, Tuple
 import cv2
+import argparse
+from tqdm import tqdm
+
+###
+# Arg parse
+###
+parser = argparse.ArgumentParser()
+parser.add_argument('--input_video', type=str, help='The input video file (.mp4)')
+parser.add_argument('--gesture_file', type=str, help='The input file (.pkl or .csv) that contains the gesture token and grids\' coordinates for each frame, which is generated from tokenize_gest_grid.py')
+parser.add_argument('--output', type=str, help='An output file (.mp4) to write the video with grids plotted')
+
+
+def load_gesture_data(gesture_file: str):
+    return gestures, grids
+
 
 def annotate_labels_grids(input_file, output_file, labels: List[Tuple], grids: List[Tuple], N: int):
     """

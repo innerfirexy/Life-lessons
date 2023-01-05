@@ -15,7 +15,6 @@ parser.add_argument('--input_dir', type=str, help='Input directory that contains
 parser.add_argument('--output_dir', type=str, help='Output directory to save tokenized data')
 parser.add_argument('--input', type=str, help='A single input file (.pkl)')
 parser.add_argument('--output', type=str, help='An output file name')
-parser.add_argument('--output_ext', type=str, default='.pkl', choices=['.pkl', '.csv'])
 parser.add_argument('--N', type=int, default=3, help='The N value for creating NxN grids')
 parser.add_argument('--return_type', type=str, default='list', choices=['list', 'df'])
 parser.add_argument('--return_grids', action='store_true')
@@ -23,11 +22,6 @@ parser.add_argument('--multiprocessing', '-mp', action='store_true')
 
 
 def check_args(args):
-    # Check output extension
-    if args.output_ext == '.csv':
-        if args.return_type == 'list' or args.return_grids == True:
-            print('--output_ext can only be .csv when --return_type is \'df\' and --return_grids is False')
-            return False
     # Check input and output paths
     if args.input_dir:
         # Check input_dir
@@ -166,10 +160,11 @@ def main(args):
             kp_data = pickle.load(fr)
         res = get_labels(kp_data, N=args.N, return_type=args.return_type, return_grids=args.return_grids)
         print(res)
-        if args.output_ext == '.pkl':
+        if args.return_grids:
+            assert isinstance(res, tuple) and len(res) == 2
             with open(args.output, 'wb') as f:
                 pickle.dump(res, f)
-        elif args.output_ext == '.csv':
+        else:
             assert isinstance(res, pd.DataFrame)
             res.to_csv(args.output, index=False)
     # Batch processing
@@ -182,12 +177,14 @@ def main(args):
                 with open(in_file, 'rb') as f:
                     kp_data = pickle.load(f)
                 in_file_name, _ = os.path.splitext(os.path.basename(in_file))
-                out_file = os.path.join(args.output_dir, in_file_name + args.output_ext)
                 res = get_labels(kp_data, N=args.N, return_type=args.return_type, return_grids=args.return_grids)
-                if args.output_ext == '.pkl':
+                if args.return_grids:
+                    out_file = os.path.join(args.output_dir, in_file_name + '.pkl')
+                    assert isinstance(res, tuple) and len(res) == 2
                     with open(out_file, 'wb') as f:
                         pickle.dump(res, f)
-                elif args.output_ext == '.csv':
+                else:
+                    out_file = os.path.join(args.output_dir, in_file_name + '.csv')
                     assert isinstance(res, pd.DataFrame)
                     res.to_csv(out_file, index=False)
 
