@@ -2,6 +2,8 @@ import pickle
 from typing import List, Tuple
 import cv2
 import argparse
+import os
+import numpy as np
 from tqdm import tqdm
 
 ###
@@ -13,25 +15,42 @@ parser.add_argument('--gesture_file', type=str, help='The input file (.pkl or .c
 parser.add_argument('--output', type=str, help='An output file (.mp4) to write the video with grids plotted')
 
 
-def load_gesture_data(gesture_file: str):
-    return gestures, grids
+def load_gesture_data(gesture_file: str, args):
+    if not os.path.exists(gesture_file):
+        print(f'gesture_file {gesture_file} does not exist.')
+        raise FileNotFoundError
+    try:
+        with open(gesture_file, 'rb') as f:
+            gestures_list, grids_list = pickle.load(f)
+        assert isinstance(grids_list[0], tuple)
+        assert len(grids_list[0]) == 2
+    except Exception:
+        print(f'gesture_file {gesture_file} corrupted or in wrong format.')
+        raise
+    else:
+        # Calcuate N, the number of splits along width or height (N x N)
+        # the formula is: dim = (N+1)*2, i.e., N = dim // 2 - 1
+        dim = len(grids_list[0][1])
+        N = dim // 2 - 1
+        vars(args)['N'] = N
+        print(f'gesture_file loaded: dim={dim}, N={args.N}')
+        return gestures_list, grids_list
 
 
-def annotate_labels_grids(input_file, output_file, labels: List[Tuple], grids: List[Tuple], N: int):
+def annotate_gestures_grids(input_file, output_file, gestures_list: List[Tuple], grids_list: List[Tuple], N: int):
     """
     :param input_file:
     :param output_file:
-    :param labels:
-    :param grids:
-    :param N: Same N as in get_labels()
+    :param gestures_list:
+    :param grids_list:
     :return:
     """
-    assert(len(labels) == len(grids))
-    assert(len(grids[0]) == 2*(N+1))
-    # Convert labels to a dict. E.g., [(0, 9, 8, 80), (1, 9, 8, 80), ...] => {0: (9,8,80), 1:(9,8,80), ...}
-    labels_dict = {it[0]: it[1:] for it in labels}
-    # Also convert grids to a dict that shares the same keys as labels_dict
-    grids_dict = {it[0]: grids[i] for i, it in enumerate(labels)}
+    assert(len(gestures_list) == len(grids_list))
+    assert(len(grids_list[0][1]) == 2*(N+1))
+    # Convert gestures_list to a dict. E.g., [(0, 9, 8, 80), (1, 9, 8, 80), ...] => {0: (9,8,80), 1:(9,8,80), ...}
+    gestures_dict = {it[0]: it[1:] for it in gestures_list if it[1] is not None} 
+    # Also convert grids to a dict that shares the same keys as gestures_dict
+    grids_dict = {it[0]: it[1] for it in grids_list if it[1] is not None}
 
     cap = cv2.VideoCapture(input_file)
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -49,18 +68,19 @@ def annotate_labels_grids(input_file, output_file, labels: List[Tuple], grids: L
     font_scale = 1
 
     pbar = tqdm(total=n_frames)
-    frame_idx = 0
+    frame_idx = -1
     while cap.isOpened():
+        frame_idx += 1
         success, image = cap.read()
         if not success:
             # print("Ignoring empty camera frame.")
             break
-        if frame_idx not in labels_dict:
+        if frame_idx not in gestures_dict:
             continue
 
         xs = grids_dict[frame_idx][:N+1]
         ys = grids_dict[frame_idx][N+1:]
-        l_label, r_label, label = labels_dict[frame_idx]
+        l_label, r_label, label = gestures_dict[frame_idx]
         l_row = np.ceil(l_label / N)
         l_col = l_label - (l_row-1) * N
         r_row = np.ceil(r_label / N)
@@ -93,7 +113,17 @@ def annotate_labels_grids(input_file, output_file, labels: List[Tuple], grids: L
         image = cv2.putText(image, 'Label: ' + str(label), (10, 150), fontFace=font, fontScale=font_scale, color=color, thickness=thickness)
 
         output.write(image)
-        frame_idx += 1
         pbar.update(1)
         if cv2.waitKey(1) & 0xFF == 27:
             break
+
+
+def main(args):
+    gestures_list, grids_list = load_gesture_data(args.gesture_file, args)
+    # print(len(gestures_list), len(grids_list))
+    annotate_gestures_grids(args.input_video, args.output, gestures_list, grids_list, args.N)
+
+
+if __name__ == '__main__':
+    args = parser.parse_args()
+    main(args)

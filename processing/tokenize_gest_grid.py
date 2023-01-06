@@ -98,6 +98,7 @@ def get_labels(data_list, N = 3, hw_ratio = 720/1280, return_type = 'list', retu
         x2 = xc + 0.5 * grids_width - 0.001
         if x1 <= 0.0 or x2 >= 1.0:
             results.append((frame_idx, None, None, None))
+            grids.append((frame_idx, None))
             continue
 
 
@@ -111,7 +112,7 @@ def get_labels(data_list, N = 3, hw_ratio = 720/1280, return_type = 'list', retu
             for j in range(1,N):
                 cur_grid.append(y1 + (y2-y1) * j/N)
             cur_grid.append(y2)
-            grids.append(tuple(cur_grid))
+            grids.append((frame_idx, tuple(cur_grid)))
 
         # l_wrist_x, l_wrist_y = data[15][0], data[15][1]
         # r_wrist_x, r_wrist_y = data[16][0], data[16][1]
@@ -134,10 +135,9 @@ def get_labels(data_list, N = 3, hw_ratio = 720/1280, return_type = 'list', retu
         l_label = int((l_row - 1)*N + l_col)
         r_label = int((r_row - 1)*N + r_col)
         label = (l_label - 1)*N*N + r_label
-
         results.append((frame_idx, l_label, r_label, label))
-        # results.append((frame_idx, l_label, r_label, l_label*r_label))  # This needs be fixed
 
+    assert len(results) == len(grids)
     if return_type == 'list':
         if return_grids:
             return results, grids
