@@ -16,11 +16,13 @@ parser.add_argument('--seed', type=int, default=3, help='the seed used for shuff
 parser.add_argument('--gestures_by_id_dir', type=str, help='the directory containing pure gestures data by video ids')
 parser.add_argument('--words_by_id_dir', type=str, help='the directory containing pure words data by video ids')
 parser.add_argument('--mixed_by_id_dir', type=str, help='the directory containing raw mixed (words and gestures) data by video ids')
+parser.add_argument('--main-task', action='store_true')
 parser.add_argument('--additional-task', type=str, choices=['compress-gestures', 'train-tokenizer', 'process-single-quotes'])
 
 
 # Main task: Split to train and test files
-def prepare_train_test(data_dir, output_dir, seed: int, test_ratio:float = 0.2,  shuffle_over='files'):
+def prepare_train_test(data_dir, output_dir, seed: int, test_ratio:float = 0.2,  shuffle_over='files',
+                       train_name='train', test_name='test'):
     data_files = [fname for fname in glob.glob(os.path.join(data_dir, '*.txt')) if ('train' not in fname and 'test' not in fname)]
     if shuffle_over == 'files':
         random.seed(seed)
@@ -40,10 +42,10 @@ def prepare_train_test(data_dir, output_dir, seed: int, test_ratio:float = 0.2, 
         train_data = all_lines[test_count:]
     else:
         raise ValueError(f'Wrong parameter value for `shuffle_over`: {shuffle_over}, which has to be "files" or "lines"')
-    with open(os.path.join(output_dir, 'train.txt'), 'w') as f:
+    with open(os.path.join(output_dir, f'{train_name}.txt'), 'w') as f:
         for line in train_data:
             f.write(line + '\n')
-    with open(os.path.join(output_dir, 'test.txt'), 'w') as f:
+    with open(os.path.join(output_dir, f'{test_name}.txt'), 'w') as f:
         for line in test_data:
             f.write(line + '\n')
 
@@ -163,11 +165,11 @@ def _handle_single_quotes_worker(words_str: str, gestures_str: str, tokenizer: t
     try:
         assert len(words) == len(gestures)
     except AssertionError:
-        print(words_str, len(words))
-        print(gestures_str, len(gestures))
         if len(gestures) < len(words):
             gestures = [gestures[0]]*(len(words) - len(gestures)) + gestures # fix the shorter gesture seq
         else:
+            print(words_str, len(words))
+            print(gestures_str, len(gestures))
             raise
     words_tokenized = tokenizer.encode(words_str).tokens
     if len(words_tokenized) == len(gestures):
@@ -206,9 +208,10 @@ def main(args):
             os.makedirs(path)
 
     # Conduct main task
-    prepare_train_test(gestures_by_id_dir, gesture_output_dir, seed=args.seed, shuffle_over='files')
-    prepare_train_test(words_by_id_dir, word_output_dir, seed=args.seed, shuffle_over='lines')
-    prepare_train_test(mixed_by_id_dir, mixed_output_dir, seed=args.seed, shuffle_over='lines')
+    if args.main_task:
+        prepare_train_test(gestures_by_id_dir, gesture_output_dir, seed=args.seed, shuffle_over='files')
+        prepare_train_test(words_by_id_dir, word_output_dir, seed=args.seed, shuffle_over='lines')
+        prepare_train_test(mixed_by_id_dir, mixed_output_dir, seed=args.seed, shuffle_over='lines', train_name='train.raw', test_name='test.raw')
 
     # Conduct additional tasks
     if args.additional_task == 'compress-gestures':
@@ -220,7 +223,24 @@ def main(args):
         tokenizer_output_file = os.path.join(word_output_dir, 'word_level_tokenizer.json')
         train_wordlevel_tokenizer(input_path=word_output_dir, output_file=tokenizer_output_file)
     elif args.additional_task == 'process-single-quotes':
-        pass
+        tokenizer_file = os.path.join(word_output_dir, 'word_level_tokenizer.json')
+        if not os.path.exists(tokenizer_file):
+            raise FileNotFoundError(f'Run train-tokenizer first and make sure {tokenizer_file} exists')
+        tokenizer = tokenizers.Tokenizer.from_file(tokenizer_file)
+        # Process
+        train_file = os.path.join(mixed_output_dir, 'train.raw.txt')
+        test_file = os.path.join(mixed_output_dir, 'test.raw.txt')
+        train_processed = handle_single_quotes(train_file, tokenizer)
+        test_processed = handle_single_quotes(test_file, tokenizer)
+        # Write processed results
+        train_output_file = os.path.join(mixed_output_dir, 'train.txt')
+        test_output_file = os.path.join(mixed_output_dir, 'test.txt')
+        with open(train_output_file, 'w') as f:
+            for item in train_processed:
+                f.write(item + '\n')
+        with open(test_output_file, 'w') as f:
+            for item in test_processed:
+                f.write(item + '\n')
 
 
 if __name__ == '__main__':
