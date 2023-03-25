@@ -1,8 +1,8 @@
 import glob
 import os
 import random
-import re
 import argparse
+import itertools
 from typing import Tuple, List
 
 import tokenizers
@@ -20,15 +20,26 @@ parser.add_argument('--additional-task', type=str, choices=['compress-gestures',
 
 
 # Main task: Split to train and test files
-def prepare_train_test(data_dir, output_dir, seed: int, test_ratio:float = 0.2):
+def prepare_train_test(data_dir, output_dir, seed: int, test_ratio:float = 0.2,  shuffle_over='files'):
     data_files = [fname for fname in glob.glob(os.path.join(data_dir, '*.txt')) if ('train' not in fname and 'test' not in fname)]
-    random.seed(seed)
-    random.shuffle(data_files)
-    all_filelines = list(map(_file_to_line, data_files))
-    test_count = int(len(all_filelines) * test_ratio)
-    test_data = all_filelines[:test_count]
-    train_data = all_filelines[test_count:]
-
+    if shuffle_over == 'files':
+        random.seed(seed)
+        random.shuffle(data_files)
+        all_filelines = list(map(_file_to_oneline, data_files))
+        test_count = int(len(all_filelines) * test_ratio)
+        test_data = all_filelines[:test_count]
+        train_data = all_filelines[test_count:]
+    elif shuffle_over == 'lines':
+        all_lines = list(map(_file_to_multilines, data_files))
+        all_lines = itertools.chain.from_iterable(all_lines) # List[List] => List[str]
+        all_lines = list(all_lines)
+        random.seed(seed)
+        random.shuffle(all_lines)
+        test_count = int(len(all_lines) * test_ratio)
+        test_data = all_lines[:test_count]
+        train_data = all_lines[test_count:]
+    else:
+        raise ValueError(f'Wrong parameter value for `shuffle_over`: {shuffle_over}, which has to be "files" or "lines"')
     with open(os.path.join(output_dir, 'train.txt'), 'w') as f:
         for line in train_data:
             f.write(line + '\n')
@@ -36,13 +47,20 @@ def prepare_train_test(data_dir, output_dir, seed: int, test_ratio:float = 0.2):
         for line in test_data:
             f.write(line + '\n')
 
-def _file_to_line(input_file) -> str:
+def _file_to_oneline(input_file) -> str:
     lines = []
     with open(input_file, 'r') as f:
         for line in f:
             lines.append(line.strip())
-    gestures = ' '.join(lines)
-    return gestures
+    line_str = ' '.join(lines)
+    return line_str
+
+def _file_to_multilines(input_file) -> List[str]:
+    lines = []
+    with open(input_file, 'r') as f:
+        for line in f:
+            lines.append(line.strip())
+    return lines
 
 
 # Additional task 1: compress-gestures
@@ -86,7 +104,7 @@ def _compress_single_file(input_file) -> List[str]:
 
 
 # Additional task 2: train-tokenizer
-def train_wordlevel_tokenizer(input_path, output_file, prefix = '', special_tokens = None):
+def train_wordlevel_tokenizer(input_path, output_file, special_tokens = None):
     """
     https://huggingface.co/docs/tokenizers/python/latest/quicktour.html#training-the-tokenizer
     We can set the training arguments like vocab_size or min_frequency (here left at their default values of 30,000 and 0) but the most important part is to give the special_tokens we plan to use later on (they are not used at all during training) so that they get inserted in the vocabulary.
@@ -103,10 +121,9 @@ def train_wordlevel_tokenizer(input_path, output_file, prefix = '', special_toke
         if tok not in special_tokens:
             special_tokens.append(tok)
     trainer = WordLevelTrainer(special_tokens=special_tokens)
-
     # Check if the corpus data exist
     if os.path.isdir(input_path):
-        candidate_files = [os.path.join(input_path, f'{prefix}train.txt') for split in ['train', 'test', 'valid']]
+        candidate_files = glob.glob(os.path.join(input_path, '*.txt'))
         files = []
         for file in candidate_files:
             if not os.path.exists(file):
@@ -120,7 +137,6 @@ def train_wordlevel_tokenizer(input_path, output_file, prefix = '', special_toke
             return
         else:
             files = [input_path]
-
     tokenizer.train(files, trainer)
     tokenizer.save(output_file)
 
@@ -185,18 +201,24 @@ def main(args):
     gesture_output_dir = '../data/gesture'
     word_output_dir = '../data/word'
     mixed_output_dir = '../data/mixed'
+    for path in [gesture_output_dir, word_output_dir, mixed_output_dir]:
+        if not os.path.exists(path):
+            os.makedirs(path)
 
-    if not os.path.exists(gesture_output_dir):
-        os.makedirs(gesture_output_dir)
-    if not os.path.exists(compressed_gesture_output_dir):
-        os.makedirs(compressed_gesture_output_dir)
-    prepare_train_test(gestures_by_id_dir, gesture_output_dir, seed=args.seed)
+    # Conduct main task
+    prepare_train_test(gestures_by_id_dir, gesture_output_dir, seed=args.seed, shuffle_over='files')
+    prepare_train_test(words_by_id_dir, word_output_dir, seed=args.seed, shuffle_over='lines')
+    prepare_train_test(mixed_by_id_dir, mixed_output_dir, seed=args.seed, shuffle_over='lines')
 
+    # Conduct additional tasks
     if args.additional_task == 'compress-gestures':
         compressed_gesture_output_dir = '../data/gesture_compressed'
+        if not os.path.exists(compressed_gesture_output_dir):
+            os.makedirs(compressed_gesture_output_dir)
         compress_gestures(gesture_output_dir, compressed_gesture_output_dir)
     elif args.additional_task == 'train-tokenizer':
-        pass
+        tokenizer_output_file = os.path.join(word_output_dir, 'word_level_tokenizer.json')
+        train_wordlevel_tokenizer(input_path=word_output_dir, output_file=tokenizer_output_file)
     elif args.additional_task == 'process-single-quotes':
         pass
 
