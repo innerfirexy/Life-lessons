@@ -77,7 +77,7 @@ def get_labels(data_list, N = 3, hw_ratio = 720/1280, return_type = 'list', retu
         l_hip_x = data[23][0]
         r_hip_x = data[24][0]
 
-        # y1, y2 = 0.001, 0.999 # This is the simplist method
+        # y1, y2 = 0.001, 0.999 # This is the simplest method
         l_eye_y = data[2][1]
         r_eye_y = data[5][1]
         mid_eye_y = (l_eye_y + r_eye_y) / 2
@@ -135,9 +135,15 @@ def get_labels(data_list, N = 3, hw_ratio = 720/1280, return_type = 'list', retu
         l_label = int((l_row - 1)*N + l_col)
         r_label = int((r_row - 1)*N + r_col)
         label = (l_label - 1)*N*N + r_label
-        results.append((frame_idx, l_label, r_label, label))
 
-    assert len(results) == len(grids)
+        # Filter the labels that are out of the range
+        if (l_label >= 1 and l_label <= N*N) and (r_label >= 1 and r_label <= N*N) and (label >= 1 and label <= N*N*N*N):
+            results.append((frame_idx, l_label, r_label, label))
+        else:
+            results.append((frame_idx, None, None, None))
+
+    if return_grids:
+        assert len(results) == len(grids)
     if return_type == 'list':
         if return_grids:
             return results, grids
