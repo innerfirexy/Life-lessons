@@ -124,23 +124,38 @@ ppls_lstm <- fread("ppls_lstm.txt")
 ppls_raw <- fread("ppls_raw.txt")
 ppls_comp <- fread("ppls_comp.txt")
 
+
 ###
 # Plot together
+###
+# Check the distribution of the `position` column
+summary(ppls_raw$position)
+  #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  #  0.00   16.00   33.00   43.22   57.00  265.00 
+mean(ppls_raw$position) # 43.22
+sd(ppls_raw$position) # 41.61
+# ratio of position <= 100
+nrow(ppls_raw[position <= 100]) / nrow(ppls_raw) # 0.94
 
 plot_ppls_raw <- ggplot(ppls_raw, aes(x=position, y=ppl)) +
   geom_smooth(method="gam", aes(color=model, fill=model, lty=model)) +
-  # geom_point(aes(color=model, shape=model), alpha=0.4, size=1) +
+  annotate("rect", xmin=100, xmax=265, ymin=-0.5, ymax=3, alpha=0.2, fill="grey") +
+  # scale_x_log10() + 
   scale_color_brewer(palette = "Set2") + scale_fill_brewer(palette = "Set2") +
   labs(x="Utterance position", y="Local entropy") +
-  theme_bw() + theme(legend.position = c(0.8, 0.9))
+  theme_bw() + theme(legend.position = c(0.2, 0.6))
 ggsave("gesture_entropy_position.pdf", plot=plot_ppls_raw, width=5, height=5)
 
-
+p_raw_part <- ggplot(ppls_raw[position <= 100], aes(x=position, y=ppl)) +
+  geom_smooth(method="gam", aes(color=model, fill=model, lty=model)) +
+  scale_color_brewer(palette = "Set2") + scale_fill_brewer(palette = "Set2") +
+  labs(x="Utterance position", y="Local entropy") +
+  theme_bw() + theme(legend.position = c(0.2, 0.9))
+ggsave("gesture_entropy_position_part.pdf", plot=p_raw_part, width=5, height=5)
 
 
 plot_ppls_comp <- ggplot(ppls_comp, aes(x=position, y=ppl)) +
   geom_smooth(method="gam", aes(color=model, fill=model, lty=model)) +
-  # geom_point(aes(color=model, shape=model), alpha=0.4, size=1) +
   scale_color_brewer(palette = "Set2") + scale_fill_brewer(palette = "Set2") +
   labs(x="Utterance position", y="Local entropy") +
   theme_bw() + theme(legend.position = c(0.8, 0.9))

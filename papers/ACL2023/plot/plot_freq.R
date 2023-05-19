@@ -1,7 +1,7 @@
 require("data.table")
 require("ggplot2")
 
-setwd("plot")
+setwd("papers/ACL2023/plot")
 
 ###
 # Uncompressed gestures
@@ -24,6 +24,18 @@ data_raw_summ <- data_raw_summ[order(-count)]
 # 8	    24	142.672	688.943	1035	182.851	105.810
 # 9	    42	122.769	457.413	796	    163.085	95.5743
 # 10	40	212.412	858.591	718	    282.316	159.825
+
+# Map the old gesture IDs to new ones
+# Old: L x R => New: (L-1) * 9 + R   (See Eq. 2 in the paper)
+# 63 = 9 x 7 => (9-1) * 9 + 7 = 79
+# 64 = 8 x 8 => (8-1) * 9 + 8 = 71
+# 56 = 8 x 7 => (8-1) * 9 + 7 = 70
+# 0 => none gesture
+# 72 = 9 x 8 => (9-1) * 9 + 8 = 80
+# 36 = 9 x 4 => (9-1) * 9 + 4 = 76
+# Thus, the top-5 most common gesture tokens are 79, 71, 70, 80, and 71.
+
+
 sum(data_raw_summ$count)
 # 121540 ~ same as # of word tokens
 
