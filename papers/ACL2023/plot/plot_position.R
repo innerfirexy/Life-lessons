@@ -127,20 +127,22 @@ ppls_comp <- fread("ppls_comp.txt")
 ###
 # Plot together
 
-plot_ppls_raw <- ggplot(ppls_raw[position<=100 & ppl<5 & ppl>1.2], aes(x=position, y=ppl)) +
-  geom_smooth(method="lm", aes(color=model, fill=model, lty=model)) +
-  geom_point(aes(color=model, shape=model), alpha=0.4, size=1) +
-  scale_color_brewer(palette = "Set1") + scale_fill_brewer(palette = "Set1") +
-  labs(x="Utterance position", y="Perplexity (local entropy)") +
+plot_ppls_raw <- ggplot(ppls_raw, aes(x=position, y=ppl)) +
+  geom_smooth(method="gam", aes(color=model, fill=model, lty=model)) +
+  # geom_point(aes(color=model, shape=model), alpha=0.4, size=1) +
+  scale_color_brewer(palette = "Set2") + scale_fill_brewer(palette = "Set2") +
+  labs(x="Utterance position", y="Local entropy") +
   theme_bw() + theme(legend.position = c(0.8, 0.9))
 ggsave("gesture_entropy_position.pdf", plot=plot_ppls_raw, width=5, height=5)
 
 
-plot_ppls_comp <- ggplot(ppls_comp[ppl<20], aes(x=position, y=ppl)) +
+
+
+plot_ppls_comp <- ggplot(ppls_comp, aes(x=position, y=ppl)) +
   geom_smooth(method="gam", aes(color=model, fill=model, lty=model)) +
-  geom_point(aes(color=model, shape=model), alpha=0.4, size=1) +
-  scale_color_brewer(palette = "Set1") + scale_fill_brewer(palette = "Set1") +
-  labs(x="Utterance position", y="Perplexity (local entropy)") +
+  # geom_point(aes(color=model, shape=model), alpha=0.4, size=1) +
+  scale_color_brewer(palette = "Set2") + scale_fill_brewer(palette = "Set2") +
+  labs(x="Utterance position", y="Local entropy") +
   theme_bw() + theme(legend.position = c(0.8, 0.9))
 ggsave("gesture_compressed_entropy_position.pdf", plot=plot_ppls_comp, width=5, height=5)
 
