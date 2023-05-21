@@ -13,17 +13,14 @@ data_raw_summ <- data_raw[,
   .(ppl_mean = mean(ppl), ppl_sd = sd(ppl), count = .N, ci_upper = mean_cl_boot(ppl)$ymax, ci_lower = mean_cl_boot(ppl)$ymin),
   by=gesture]
 data_raw_summ <- data_raw_summ[order(-count)]
-# top 5
-# 31	63	2.96898	12.4056	42367	3.09417	2.86052
-# 32	64	6.05750	30.7523	20540	6.49515	5.65289
-# 30	56	6.25267	44.3266	20354	6.86402	5.66097
-# 1	    0	12.2483	86.9310	17003	13.4979	10.9667
-# 33	72	13.9893	75.6346	9264	15.5515	12.5498
-# 6	    36	51.5780	326.969	2762	64.6469	41.1306
-# 7	    32	70.4669	439.890	2038	91.4624	53.6883
-# 8	    24	142.672	688.943	1035	182.851	105.810
-# 9	    42	122.769	457.413	796	    163.085	95.5743
-# 10	40	212.412	858.591	718	    282.316	159.825
+# Top 6 tokens
+#    gesture  ppl_mean    ppl_sd count  ci_upper  ci_lower
+# 1:      63  2.968982  12.40563 42367  3.093411  2.853379
+# 2:      64  6.057499  30.75231 20540  6.523445  5.664553
+# 3:      56  6.252668  44.32664 20354  6.893801  5.644288
+# 4:       0 12.248335  86.93096 17003 13.643883 10.843682
+# 5:      72 13.989324  75.63458  9264 15.702493 12.596356
+# 6:      36 51.578032 326.96861  2762 65.384295 40.977287
 
 # Map the old gesture IDs to new ones
 # Old: L x R => New: (L-1) * 9 + R   (See Eq. 2 in the paper)
@@ -33,11 +30,20 @@ data_raw_summ <- data_raw_summ[order(-count)]
 # 0 => none gesture
 # 72 = 9 x 8 => (9-1) * 9 + 8 = 80
 # 36 = 9 x 4 => (9-1) * 9 + 4 = 76
-# Thus, the top-5 most common gesture tokens are 79, 71, 70, 80, and 71.
+# Thus, the top-5 most common gesture tokens are 79, 71, 70, 80, and 76.
 
+# Select top 6 tokens and conver to new tokens
+d.top6 <- data_raw_summ[1:6,]
+d.top6$gesture <- as.character(c(79, 71, 70, 0, 80, 76))
 
-sum(data_raw_summ$count)
-# 121540 ~ same as # of word tokens
+# Add proportion column
+total_count <- sum(data_raw_summ$count) # 121540 ~ same as # of word tokens
+d.top6$proportion <- d.top6$count / total_count
+
+# Save to csv
+fwrite(d.top6[, c("gesture", "count", "proportion", "ppl_mean")], 
+  "top6_stats.csv", sep=",", quote=FALSE, row.names=FALSE)
+
 
 sorted_gestures <- data_raw_summ$gesture
 data_raw_summ$gesture <- factor(data_raw_summ$gesture, levels=sorted_gestures)
@@ -74,29 +80,8 @@ sum(data_comp_summ$count)
 
 ###
 # Frequency vs. Rank plot
-data_raw_summ$gesture <- factor(data_raw_summ$gesture, levels=as.character(data_raw_summ))
 data_raw_summ$rank <- seq(1:nrow(data_raw_summ))
-
-p_raw <- ggplot(data_raw_summ, aes(x=log(rank), y=log(count))) +
-  geom_col(fill="steelblue", alpha=0.5) +
-  #geom_point() +
-  geom_smooth(aes(group=1), se=FALSE, size = 1) +
-  # annotate("label", x=c(0, 0.693, 1.099), y=c(9.67, 9.13, 7.89),
-  #          label=c("<70>", "<69>", "<78>"), hjust="inward") +
-  theme_bw() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.major = element_blank())
-
-
-data_comp_summ$gesture <- factor(data_comp_summ$gesture, levels=as.character(data_comp_summ))
 data_comp_summ$rank <- seq(1:nrow(data_comp_summ))
-
-p_comp <- ggplot(data_comp_summ, aes(x=log(rank), y=log(count))) +
-  geom_col(fill="#FC4E07", alpha=0.5) +
-  geom_smooth(aes(group=1), se=FALSE, color = "firebrick1", size = 1) +
-  # annotate("label", x=c(0, 0.693, 1.099), y=c(9.67, 9.13, 7.89),
-  #          label=c("<70>", "<69>", "<78>"), hjust="inward") +
-  theme_bw() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.grid.major = element_blank())
 
 # Combined
 data_raw_summ$type <- "Raw"
@@ -108,16 +93,50 @@ data_freq <- rbindlist(list(
 # 63 => 79
 # 56 => 70
 # 64 => 71
-p_freq <- ggplot(data_freq, aes(x=log(rank), y=log(count))) +
-  geom_col(aes(fill=type), alpha=0.5, position = position_dodge(), width=0.1) +
-  geom_smooth(aes(color=type, lty=type), se=FALSE, linewidth = 1.5) +
-  annotate("label", x=c(0, 0.693, 1.099), y=c(9.67, 9.13, 8.89),
+data_raw_summ[gesture == "63", gesture_new := "79"]
+data_raw_summ[gesture == "56", gesture_new := "70"]
+data_raw_summ[gesture == "64", gesture_new := "71"]
+data_comp_summ[gesture == "63", gesture_new := "79"]
+data_comp_summ[gesture == "56", gesture_new := "70"]
+data_comp_summ[gesture == "64", gesture_new := "71"]
+
+# Get coordinates for annotation
+data_raw_summ[gesture_new %in% c("79", "70", "71"), .(rank, count)]
+#    rank count
+# 1:    1 42367
+# 2:    2 20540
+# 3:    3 20354
+data_comp_summ[gesture_new %in% c("79", "70", "71"), .(rank, count)]
+#    rank count
+# 1:    1  6430
+# 2:    2  5625
+# 3:    3  4944
+data_freq[rank<=3, .(mean_count = mean(count)), by=.(rank)]
+#    rank mean_count
+# 1:    1    24398.5
+# 2:    2    13082.5
+# 3:    3    12649.0
+# The `mean_count` is used to determine the y coordinate of the annotation
+
+
+p_freq <- ggplot(data_freq, aes(x=rank, y=count)) +
+  # geom_col(data = data_freq[rank <= 3,], 
+  #   aes(fill=type), alpha=0.5, position = position_dodge(), width=0.2) +
+  geom_smooth(aes(color=type, lty=type), se=FALSE, linewidth = 1) +
+  geom_point(data = data_freq, aes(color=type, shape=type), size=3) +
+  annotate("label", 
+            # x=c(0, 0.693, 1.099), y=c(9.67, 9.13, 8.89),
+            x=c(1,2,3), y=c(24398.5, 13082.5, 12649.0),
            label=c("<79>", "<70>", "<71>"), hjust="inward") +
-  scale_fill_manual("Gesture token type", values = c("#D55E00", "#0072B2")) + #E69F00 or #FC4E07
-  scale_color_manual("Gesture token type", values = c("#D55E00", "#0072B2")) + #0072B2 or #FC4E07
+  scale_color_brewer("Gesture token type", palette = "Set1") +
+  scale_fill_brewer("Gesture token type", palette = "Set1") +
   scale_linetype_discrete("Gesture token type") +
+  scale_shape_discrete("Gesture token type") +
+  scale_x_log10() + scale_y_log10() +
   labs(x="Rank of gesture token (log scaled)", y="Frequency count (log scaled)") +
   theme_bw() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        panel.grid.major = element_blank(), legend.position = c(.8,.8))
+  theme(
+    # axis.text.x = element_blank(), 
+    # axis.ticks.x = element_blank(),
+    panel.grid.major = element_blank(), legend.position = c(.8,.8))
 ggsave("freq_rank_log-log.pdf", plot = p_freq, width = 6, height = 4)
