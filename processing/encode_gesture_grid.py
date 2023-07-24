@@ -101,7 +101,6 @@ def get_labels(data_list, N = 3, hw_ratio = 720/1280, return_type = 'list', retu
             grids.append((frame_idx, None))
             continue
 
-
         # Compute grids for current frame
         if return_grids:
             cur_grid = [x1]
