@@ -10,9 +10,9 @@ import itertools
 from typing import List
 from utils import Task, DownloadTask
 
-# Fix mp.Queue.qsize() problem on MacOS
+# Fix mp.Queue.qsize() problem on MacOS & Windows
 import platform
-if platform.system() == 'Darwin':
+if platform.system() == 'Darwin' or 'Windows':
     from FixedQueue import Queue
 else:
     from multiprocessing.queues import Queue
