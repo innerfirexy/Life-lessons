@@ -1,6 +1,12 @@
+# executables & data
 *.mp4
+*.exe
 *.pkl
 .DS_Store
+tmp/
 data/
+
+# IDEs & Pycache
 .idea/
+.vscode/
 __pycache__/
