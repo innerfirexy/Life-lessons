@@ -23,7 +23,10 @@ class DownloadTask(Task):
         self.download_path = download_path
         self.url = url
         self.args = args
-        self.video_id = re.search(r'(?<=\?v\=).+', url).group(0)
+        if re.search(r'(?<=\?v\=).+', url) is None:
+            self.video_id = url
+        else:
+            self.video_id = re.search(r'(?<=\?v\=).+', url).group(0)
         self.downloaded_video_file = os.path.join(self.download_path, self.video_id + '.mp4')
         self.n_trials = 0
 
