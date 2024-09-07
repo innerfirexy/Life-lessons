@@ -2,6 +2,24 @@
 A dataset of first-person monologue videos/transcript/annotations about "life lessons" in various domains. The main purpose is for multi-modal language analysis and modeling.
 
 ## Published papers
+[Findings of ACL 2024: How Much Does Nonverbal Communication Conform to Entropy Rate Constancy?: A Case Study on Listener Gaze in Interaction](https://aclanthology.org/2024.findings-acl.210/)
+```
+@inproceedings{wang-etal-2024-much,
+    title = "How Much Does Nonverbal Communication Conform to Entropy Rate Constancy?: A Case Study on Listener Gaze in Interaction",
+    author = "Wang, Yu  and
+      Xu, Yang  and
+      Skantze, Gabriel  and
+      Buschmeier, Hendrik",
+    booktitle = "Findings of the Association for Computational Linguistics ACL 2024",
+    month = aug,
+    year = "2024",
+    address = "Bangkok, Thailand and virtual meeting",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.findings-acl.210",
+    pages = "3533--3545"
+}
+```
+
 [Findings of ACL 2023: Spontaneous gestures encoded by hand positions improve language models: An Information-Theoretic motivated study](https://aclanthology.org/2023.findings-acl.600/)
 ```
 @inproceedings{xu-cheng-2023-spontaneous,
