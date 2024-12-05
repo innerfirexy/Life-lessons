@@ -1,0 +1,415 @@
+- Okay so if you spend any amount of time on YouTube
+you've possibly wondered at some point
+how much money do these YouTubers actually make
+Is it related to how many views or how many subscribers
+or all these different factors
+So in this episode of Oversharing
+I'm gonna break down
+exactly how much money I make from YouTube
+and I'll be explaining how this whole thing works
+So that if you wanna get into it you can
+Or if you're just really curious
+you can indulge your curiosity
+We'll start by talking about the logistics
+of how people actually earn money on YouTube
+and how it works
+And then we'll talk about the three main factors
+that affect how much an individual earns on YouTube
+And then we'll go under the hood
+and I'll be exposing all of my analytics
+for the last three years
+so you can see how much money I really make
+So to start making money on YouTube
+you first have to join the YouTube Partners Programme
+which means these days
+you need to have at least a thousand subscribers
+and 4,000 hours of total watch time on YouTube
+So you can't start monetizing
+the instant you turn on your channel
+Once you've hit those landmarks
+then you can apply for the programme
+and if you're approved for it
+you can then turn on ads on your videos
+This is optional but when you turn on ads
+and people would probably usually see a five-second ad
+before the video
+and might see some mid-roll ads during the video
+and possibly a five-second ad after the video
+And the idea is that YouTube sells these ad slots
+to advertisers through their Google Ads programme
+So advertisers can then pay to show their ads
+on different types of content
+and they might wanna do it
+based on a whole lot of different factors
+Now the problem is that when you are very small on YouTube
+you actually aren't really earning very much money at all
+and I recognised this
+So for me when I started my YouTube channel in June 2017
+I made 77 videos before I turned on monetization
+I think I turned on monetization roundabout April 2018
+because to my mind
+making five or $10 a month from YouTube
+was just not worth the annoyance for the audience
+in watching the ads
+But if that number was gonna be $500 a month
+at that point it would be worth subjecting the audience
+to the annoyingness of ads
+because it was making me a significant amount of money
+And so for example from June 2017 up until April 2018
+I had 340,000 views
+8,300 subscribers
+and I made one pound 96 in total across that
+But then when I turned on monetization
+for the next six months
+from April 2018 to September 2018
+in total I made 6,106 pounds and 42 P
+So that's the logistics out of the way
+Let's now talk about the three factors
+that affect how much money you earn on YouTube
+And the most important of those is actually watch time
+So watch time is quite important
+both from a revenue perspective
+and also from a YouTube algorithm perspective
+So from a revenue perspective
+it's important because the longer
+people are watching your videos
+the more opportunity they have to see ads
+But from a YouTube algorithm perspective
+watch time is interesting
+because although no one quite knows
+exactly how the YouTube algorithm works
+the YouTube creator team have hinted
+a lot of it is based on watch time
+If your videos are making people watch for longer
+and also stay on YouTube as a platform for longer
+then your videos are more likely to be recommended
+by the algorithm
+And so that's partly why these audience retention graphs
+that we see in our YouTube Studio these are so important
+And if we look at my four previous videos
+you can see the audience retention graphs
+are really not very good
+For most of these videos
+even for the ones that I think are pretty good
+we're dropping off to about maybe only one in four
+or one in five people are actually watching
+all the way through to the end of the video
+And you can see there's a significant decline
+right at the start
+Usually this is because people click on a video
+within five seconds they realise that can't be bothered
+to watch the video so they go away from it
+So you get this precipitous decline
+And then you get a general decline
+as you go through the video
+which just shows that there's nothing in particular
+that's making people click away from it
+It's just that people are slowly attritioning over time
+In fact some people say that the more viral a video gets
+the less your audience retention is gonna be good
+For example in one of my recent videos
+called How I Type Really Fast
+which amazingly went viral
+loads of people watching that video
+are people who don't know who I am
+They're not subscribed to my channel
+Therefore they're a lot less likely to watch
+17 minutes of me spouting on about something or another
+which is why the audience retention graphs
+for that particular video look so abysmal
+even though that video had a lot of views
+Let's have a look at some of my more popular videos
+and we can see how watch time relates to revenue
+So for example
+if we compare the video of My Productivity Desk Setup
+with the video of Which iPad Should You Buy
+the desk setup video has made about 1700 pounds
+with 1.4 million views
+and the iPad video has made 2,246 pounds
+with 1.3 million views
+So that's kind of weird
+The iPad video has made more money
+even though it has fewer views
+But if we look at the watch time
+the desk setup only has 75,000 hours which is quite a lot
+but the iPad video has 124,000 hours
+So it's about a 50% increase
+But then on top of that
+we also have an extra feature which is mid-roll ads
+This was something that Google and YouTube introduced
+a few years ago
+and that meant that on any video above 10 minutes
+you could have mid-roll ads
+So sometimes those are ads
+that are those little option banner ads
+that appear in the middle of video
+At other times they're more annoying
+like five second ads that interrupt your video
+(guitar music)
+that you have to skip
+and then you can watch the rest of the video
+But crucially this only applies to videos
+that were over 10 minutes long
+And so a lot of YouTubers realised this
+and started kind of artificially inflating
+the length of their videos to make it more than 10 minutes
+For example if we take a look
+at my YouTuber friend and colleague Shelby Church
+she's done a video where she breaks down
+how much money she makes off YouTube
+and she looks at the difference
+between a nine-minute and a 10-minute video
+And she found that her videos that are over 10 minutes
+earn over three times as much revenue
+as the videos that are under 10 minutes
+So it makes such a big change
+which is what kind of incentivizes YouTubers
+to have longer videos
+just so they can get these mid-roll ads in
+And actually recently in the last couple of months
+YouTube has made a change
+whereby you now only need it to be eight minutes long
+before you can start adding mid-roll ads
+So I suspect people are gonna be less keen
+to inflate above 10 minutes
+and now a little bit more keen to inflate
+above eight minutes
+So the second thing that determines
+how much money you're gonna make is the type of content
+And that's what dictates the CPM or cost per mille
+which is Latin for like cost per thousand views
+or something like that
+And the CPM changes on a lot of things
+but mostly it's based on how much advertisers
+are willing to pay to target a certain type of video
+And so depending on the topic
+you would get different rates
+So let's say I make a video about I don't know
+a fantasy book that I like
+The sorts of companies that are advertising in those videos
+probably don't have a lot of money
+They're probably book publishing companies stuff like that
+Whereas if you were to make a video about finance
+or real estate or credit cards
+the companies that advertise on those sorts of videos
+have loads of money to burn
+And so your CPM rates are gonna be higher
+So in general for most YouTubers
+the CPM is around three to $7 per thousand views
+But if you pick the right sort of video topic
+it can go up to about 30 or $40 per thousand views
+which is absolutely huge
+For example most of my videos
+are in the three to seven pounds range
+But if we look at Shelby Church's video
+where she talks about how to make money
+using Amazon's FBA Fulfilled by Amazon programme
+that's a prime video for advertisers to target
+because it's a video about making money online
+and therefore loads of people who have courses
+about making money online
+are gonna target that particular audience
+And we can see from her channel that she says
+her playback-based CPM was $35.60 cents
+which is absolutely enormous
+And so she's making more than 10 times as much money
+as she would be making on a different kind of topic video
+just purely based on the choice of topic
+Unfortunately the CPM doesn't actually go to the creator
+YouTube tends to take a 45% cut of CPMs
+And so if your CPM is $10
+you're actually only gonna get $6.50 off that amount
+And that leads to a new metric
+that they've recently introduced called RPM
+which is revenue per mille
+And that is a more accurate idea
+of how much money you as the creator
+are taking home from these videos
+The third major thing that influences
+how much money we make on videos
+is the role of sponsors
+Now essentially if a video is sponsored
+then at some point during the video
+the creator is gonna make some kind of spiel
+So for example
+I might say that if you want to start your own journey
+of making money online
+one of the best ways of doing that
+is by learning how to code
+To learn how to code
+you should start by teaching yourself HTML and CSS
+And then you should learn
+a server side language like Python
+And actually the best way to learn Python
+is by following an online course over at Brilliant
+who are very kindly sponsoring this video
+If you don't know Brilliant is an amazing platform
+with online courses for math science
+and computer science
+and their introduction to Python and advanced Python series
+is actually a really good interactive fun way
+of learning how to code in Python
+And then once you learn how to code in Python
+you can basically build anything from a simple website
+all the way through to machine learning algorithms
+It's one of the most popular programming languages
+in the world and Brilliant is a great place to learn that
+They've also got fantastic courses on math and science
+They've recently got one about uncertainty
+which is all about kind of navigating probability
+in an uncertain world
+So if that sounds up your street
+you should definitely head over to brilliant.org/ali
+and the first 200 people to click that link
+will get 20% off the annual premium description
+So thank you Brilliant for sponsoring this video
+That's an example of a sponsored message
+And so Brilliant are gonna pay me
+a certain amount of money for plugging that within my video
+and that massively changes how much money
+I'm gonna be making from this video
+A few things kind of complicated
+So firstly most contracts with sponsors
+say that you're not allowed to say
+how much money you're making from them
+So I'm not allowed to tell you how much money
+Brilliant have paid me to do that particular sponsor plug
+But with some channels like Casey Neistat for example
+he says he makes between 10,000 and $100,000 per video
+- As in like more than $100,000
+- Even though he's absolutely huge
+he's a lot bigger than I am
+But it just kinda gives you an idea
+of the numbers that get thrown around
+And in fact a lot of huge YouTubers
+make more than $100,000 per sponsored video
+which is just insane
+So we've talked about the different factors
+that influence how much money YouTubers make
+Let me now take you inside my YouTube Studio
+my YouTube Studio app thingy
+and I'll show you how much money I've been making
+from each of the videos
+and we'll talk about that a little bit more
+So this is the lifetime revenue of my YouTube channel
+since about June 2017
+when I first started uploading videos
+And so we can see that for the first absolutely ages
+I'm making sometimes one penny per day
+but basically I'm not making anything until April 2018
+I think it was 17th April
+I remember this day when I turned on monetization
+And so now I'm going from making absolutely nothing per day
+to making 11 pounds eight pounds nine pounds 16 pounds
+So immediately having already been a YouTuber
+for like nine months at this point
+and having made 77 videos already
+I'm now making sort of between five and 15 pounds a day
+off of YouTube ads
+which at the time was pretty great
+I was already feeling like I was winning at life
+because that pays for a takeaway every single day
+if I want to
+And that just felt like it kind of felt like cheating
+that I can basically eat for free
+now that I have a YouTube channel which was quite nice
+So we can see in May 2018 16 pounds 72
+and then kind of dropping down to three pounds
+three pounds 68 10 pounds
+And then we start in June 2018
+I think this was when I made my iPad video
+Yeah this was a special video
+How I Take Notes on My iPad at Medical School
+But as soon as that video comes out
+suddenly my revenue skyrockets
+from five pound 91 and four pound 69 a day
+all the way up to sometimes 60 pounds a day
+and 40 pounds a day and 70 pounds a day
+And again this really felt like cheating at the time
+because I was like I can't believe
+I'm making this much money off YouTube
+I'm making like 50 pounds a day
+That was like 1500 quid a month
+and that just felt again like this is amazing
+I'm making real actual money from YouTube
+It's not just a few pennies here and there
+This is 1500 pounds a month
+This is actually a large amount of money
+Over time we can see it doesn't really change much
+for the next year
+So for around 12 months after that
+I was sort of hovering between the
+making a few dozen pounds a day off of YouTube ads
+which was still pretty good
+But then over time
+we can see that the graph really starts to increase
+So throughout 2019 the rate bumps up a bit
+So some days I'm making over a hundred pounds a day
+which is again absolutely insane
+And then we've got a 97 88 95 100 100
+all the way through to September 2019
+And then what's really cool about this graph
+is just how much of an exponential rise it's been
+over the last six months
+Basically since lockdown started
+So I think kind of lockdown was pretty good for me
+and the YouTube channel because now all of a sudden
+loads more people are watching
+sitting down and watching videos
+And now we can see that these days for example
+Friday the 3rd of July 578 pounds in a single day
+That's pretty good
+Sunday 23rd of August 2020 711 pounds in a day
+If you told me a couple of years ago
+I was gonna make 700 quid in a day from YouTube ads
+I would literally have had a stroke
+and I would've thought no go home
+This is not this is not gonna happen
+It's a very much like an sort of slow and steady
+slow and steady and then all of a sudden
+it starts to grow
+And that's only really happened in the last six months
+It's one of those weird things
+whereby it almost feels like playing a video game
+where your character starts off kind of on level one
+and you can't kill anything
+And then you can start kind of killing some stuff
+But then at some point
+you get to kind of what feels like the end game
+where your character starts getting a lot more powerful
+and suddenly you can just kind of do all these things
+that you couldn't have done before
+And that's kind of what it feels like
+on the sort of exponential growth of YouTube revenue
+And if we kind of put this down to the last 28 days
+we see yeah estimated revenue
+in the last 28 days 11,618 pounds
+Whereas estimated revenue of the lifetime
+was about 90,000
+So in the last one month I've made about 10%
+11 12% revenue compared to the last three years
+which is pretty good going
+And we can see here that the CPM the cost per mille
+is five pound 50
+but the actual revenue per mille is only one pound 68
+and that's because loads of people have ad block
+It's because YouTube takes a cut
+and all these different factors
+So yeah last 28 days 11,618 pounds
+This is pretty good
+For context my junior doctor salary
+was about 3000 pounds a month pretax
+This is also pretax
+So this is three and a bit times more
+than my monthly doctor salary
+If you wanna see how much money I've made
+from other sources that video
+How Much Money I Make in a Week as a Doctor on YouTube
+it will be linked to the little playlist over there
+along with a couple of other videos
+about how to make money online
+and how you can get started
+on this journey of #passiveincome
+Thank you for watching and I'll see you in the next video
+Bye bye
+(upbeat music)

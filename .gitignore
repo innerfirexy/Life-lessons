@@ -1,6 +1,5 @@
 *.mp4
 *.pkl
 .DS_Store
-data/
 .idea/
 __pycache__/
