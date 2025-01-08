@@ -109,4 +109,3 @@ python get_gesture_seqs.py --input_gesture_dir YOUR_GESTURE_PATH \
       --output_gesture_dir YOUR_GESTURE_PATH \
       --output_mixed_dir YOUR_MIXED_PATH
 ```
-TBD
